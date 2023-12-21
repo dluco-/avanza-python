@@ -178,6 +178,7 @@ class Avanza:
         """ Get overview for all accounts
 
         Returns:
+
             {
                 'accounts': [{
                     'accountId': str,
@@ -215,6 +216,7 @@ class Avanza:
         """ Get overview for a specific account
 
         Returns:
+
             {
                 'accountId': str,
                 'accountType': str,
@@ -280,6 +282,7 @@ class Avanza:
         """Get investment positions for all account
 
         Returns:
+
             {
                 'withOrderbook':[{
                     'account':{
@@ -462,6 +465,7 @@ class Avanza:
         """ Get your "Bevakningslistor"
 
         Returns:
+
             [{
                 'editable': bool,
                 'id': str,
@@ -516,69 +520,123 @@ class Avanza:
         """ Get info about a fund
 
         Returns:
+
             {
-                'NAV': float,
-                'NAVLastUpdated': str,
-                'administrators': str,
-                'autoPortfolio': bool,
-                'buyFee': float,
-                'buyable': bool,
-                'capital': float,
-                'changeSinceOneDay': float,
-                'changeSinceOneMonth': float,
-                'changeSinceOneWeek': float,
-                'changeSinceOneYear': float,
-                'changeSinceSixMonths': float,
-                'changeSinceThreeMonths': float,
-                'changeSinceTurnOfTheYear': float,
-                'description': str,
-                'domicile': str,
-                'fundCompany': {
-                    'homePage': str,
-                    'name': str
+                "adminCompany": {
+                    "country": str,
+                    "name": str,
+                    "url": str
                 },
-                'hasInvestmentFees': bool,
-                'id': str,
-                'isin': str,
-                'loanFactor': float,
-                'managementFee': float,
-                'name': str,
-                'normanAmount': float,
-                'numberOfOwners': int,
-                'numberOfPriceAlerts': int,
-                'otherFees': str,
-                'positions': [{
-                    'accountId': str,
-                    'accountName': str,
-                    'accountType': str,
-                    'acquiredValue': float,
-                    'averageAcquiredPrice': float,
-                    'profit': float,
-                    'profitPercent': float,
-                    'value': float,
-                    'volume': float
-                }],
-                'positionsTotalValue': float,
-                'prospectus': str,
-                'relatedFunds': [{
-                    'changeSinceOneYear': float,
-                    'id': str,
-                    'name': str
-                }],
-                'risk': int,
-                'riskLevel': str,
-                'sellFee': float,
-                'sellable': bool,
-                'startDate': str,
-                'subCategory': str,
-                'tradingCurrency': str,
-                'type': str
+                "aumCoveredCarbon": float,
+                "capital": float,
+                "carbonRiskScore": float,
+                "carbonSolutionsInvolvement": float,
+                "categories": [
+                    str
+                ],
+                "controversyScore": float,
+                "countryChartData": [
+                    {
+                        "countryCode": str,
+                        "currency": str,
+                        "isin": str,
+                        "name": str,
+                        "orderbookId": str,
+                        "type": str,
+                        "y": float
+                    }
+                ],
+                "currency": str,
+                "description": str,
+                "developmentFiveYears": float,
+                "developmentOneDay": float,
+                "developmentOneMonth": float,
+                "developmentOneYear": float,
+                "developmentSixMonths": float,
+                "developmentThisYear": float,
+                "developmentThreeMonths": float,
+                "developmentThreeYears": float,
+                "environmentalScore": float,
+                "esgScore": float,
+                "fossilFuelInvolvement": float,
+                "fundManagers": [
+                    {
+                        "name": str,
+                        "startDate": date
+                    }
+                ],
+                "fundRatingViews": [
+                    {
+                        "date": date,
+                        "fundRating": int,
+                        "fundRatingType": str
+                    }
+                ],
+                "fundType": str,
+                "fundTypeName": str,
+                "governanceScore": float,
+                "hedgeFund": bool,
+                "holdingChartData": [
+                    {
+                        "countryCode": str,
+                        "currency": str,
+                        "isin": str,
+                        "name": str,
+                        "orderbookId": str,
+                        "type": str,
+                        "y": float
+                    }
+                ],
+                "indexFund": bool,
+                "isin": str,
+                "lowCarbon": bool,
+                "managementFee": float,
+                "nav": float,
+                "navDate": date,
+                "portfolioDate": date,
+                "ppmCode": type(None),
+                "pricingFrequency": str,
+                "primaryBenchmark": str,
+                "productFee": float,
+                "productInvolvements": [
+                    {
+                        "product": str,
+                        "productDescription": str,
+                        "value": float
+                    }
+                ],
+                "prospectusLink": str,
+                "rating": int,
+                "recommendedHoldingPeriod": str,
+                "risk": int,
+                "riskText": str,
+                "sectorChartData": [
+                    {
+                        "countryCode": type(None),
+                        "currency": str,
+                        "isin": type(None),
+                        "name": str,
+                        "orderbookId": type(None),
+                        "type": str,
+                        "y": float
+                    }
+                ],
+                "sharpeRatio": float,
+                "socialScore": float,
+                "standardDeviation": float,
+                "superloanOrderbook": bool,
+                "sustainabilityRating": int,
+                "sustainabilityRatingCategoryName": str,
+                "svanen": bool,
+                "ucitsFund": bool
             }
         """
 
-        return self.get_instrument(
-            InstrumentType.FUND,
-            fund_id
+        return self.__call(
+            HttpMethod.GET,
+            Route.FUND_PATH.value.format(
+                fund_id
+            )
         )
 
     def get_stock_info(
@@ -588,6 +646,7 @@ class Avanza:
         """ Returns info about a stock
 
         Returns:
+
             {
                 'annualMeetings': [
                     {
@@ -715,45 +774,46 @@ class Avanza:
         """ Returns info about a certificate
 
         Returns:
-        {
-           "historicalClosingPrices":{
-              "oneDay":"float",
-              "oneMonth":"float",
-              "oneWeek":"float",
-              "start":"float",
-              "startDate":"str",
-              "threeMonths":"float"
-           },
-           "isin":"str",
-           "keyIndicators":{
-              "isAza":"bool",
-              "leverage":"float",
-              "numberOfOwners":"int",
-              "productLink":"str"
-           },
-           "listing":{
-              "countryCode":"str",
-              "currency":"str",
-              "marketPlaceCode":"str",
-              "marketPlaceName":"str",
-              "marketTradesAvailable":"bool",
-              "shortName":"str",
-              "tickSizeListId":"str",
-              "tickerSymbol":"str"
-           },
-           "name":"str",
-           "orderbookId":"str",
-           "quote":{
-              "change":"float",
-              "changePercent":"float",
-              "last":"float",
-              "timeOfLast":"int",
-              "totalValueTraded":"float",
-              "totalVolumeTraded":"int"
-           },
-           "tradable":"str",
-           "type":"str"
-        }
+
+            {
+                "historicalClosingPrices":{
+                    "oneDay":"float",
+                    "oneMonth":"float",
+                    "oneWeek":"float",
+                    "start":"float",
+                    "startDate":"str",
+                    "threeMonths":"float"
+                },
+                "isin":"str",
+                "keyIndicators":{
+                    "isAza":"bool",
+                    "leverage":"float",
+                    "numberOfOwners":"int",
+                    "productLink":"str"
+                },
+                "listing":{
+                    "countryCode":"str",
+                    "currency":"str",
+                    "marketPlaceCode":"str",
+                    "marketPlaceName":"str",
+                    "marketTradesAvailable":"bool",
+                    "shortName":"str",
+                    "tickSizeListId":"str",
+                    "tickerSymbol":"str"
+                },
+                "name":"str",
+                "orderbookId":"str",
+                "quote":{
+                    "change":"float",
+                    "changePercent":"float",
+                    "last":"float",
+                    "timeOfLast":"int",
+                    "totalValueTraded":"float",
+                    "totalVolumeTraded":"int"
+                },
+                "tradable":"str",
+                "type":"str"
+            }
         """
 
         return self.get_instrument(
@@ -768,49 +828,48 @@ class Avanza:
         """ Returns additional info about a certificate
 
         Returns:
-        {
-           "assetCategory":"str",
-           "brokerTradeSummaries":"List",
-           "category":"str",
-           "collateralValue":"float",
-           "direction":"str",
-           "documents":{
-              "kid":"str",
-              "prospectus":"str"
-           },
-           "fee":{
-              "totalMonetaryFee":"float",
-              "totalPercentageFee":"float"
-           },
-           "holdings":{
-              "accountAndPositionsView":"List",
-              "acquiredPrice":"float",
-              "acquiredValue":"float",
-              "totalDevelopmentAmount":"float",
-              "totalDevelopmentPercent":"float",
-              "totalMarketValue":"float",
-              "totalVolume":"int"
-           },
-           "issuer":"str",
-           "leverage":"float",
-           "orderDepthLevels":"List",
-           "ordersAndDeals":{
-              "accounts":"List",
-              "deals":"List",
-              "hasStoplossOrders":"bool",
-              "orders":"List"
-           },
-           "subCategory":"str",
-           "trades":"List"
-        }
+
+            {
+                "assetCategory":"str",
+                "brokerTradeSummaries":"List",
+                "category":"str",
+                "collateralValue":"float",
+                "direction":"str",
+                "documents":{
+                    "kid":"str",
+                    "prospectus":"str"
+                },
+                "fee":{
+                    "totalMonetaryFee":"float",
+                    "totalPercentageFee":"float"
+                },
+                "holdings":{
+                    "accountAndPositionsView":"List",
+                    "acquiredPrice":"float",
+                    "acquiredValue":"float",
+                    "totalDevelopmentAmount":"float",
+                    "totalDevelopmentPercent":"float",
+                    "totalMarketValue":"float",
+                    "totalVolume":"int"
+                },
+                "issuer":"str",
+                "leverage":"float",
+                "orderDepthLevels":"List",
+                "ordersAndDeals":{
+                    "accounts":"List",
+                    "deals":"List",
+                    "hasStoplossOrders":"bool",
+                    "orders":"List"
+                },
+                "subCategory":"str",
+                "trades":"List"
+            }
         """
 
         return self.get_instrument_details(
             InstrumentType.CERTIFICATE,
             certificate_id
         )
-
-
 
     def get_warrant_info(
         self,
@@ -819,6 +878,7 @@ class Avanza:
         """ Returns info about a warrant
 
         Returns:
+
             {
                 'callIndicator': str,
                 'change': float,
@@ -889,6 +949,7 @@ class Avanza:
         """ Returns info about an index
 
         Returns:
+
             {
                 'change': float,
                 'changePercent': float,
@@ -971,10 +1032,10 @@ class Avanza:
             )
         )
 
-
     def search_for_stock(
         self,
-        query
+        query: str,
+        limit: int = 10
     ):
         """ Search for a stock
 
@@ -982,8 +1043,10 @@ class Avanza:
             query: can be a ISIN ('US0378331005'),
                 name ('Apple'),
                 tickerSymbol ('AAPL')
+            limit: maximum number of results to return
 
         Returns:
+
             {
                 'totalNumberOfHits': int,
                 'hits': [{
@@ -1004,12 +1067,14 @@ class Avanza:
         """
         return self.search_for_instrument(
             InstrumentType.STOCK,
-            query
+            query,
+            limit
         )
 
     def search_for_fund(
         self,
-        query: str
+        query: str,
+        limit: int = 10
     ):
         """ Search for a fund
 
@@ -1017,8 +1082,10 @@ class Avanza:
             query: can be a ISIN ('SE0012454338'),
                 name ('Avanza'),
                 tickerSymbol ('Avanza Europa')
+            limit: maximum number of results to return
 
         Returns:
+
             {
                 'hits': [{
                     'instrumentType': 'FUND',
@@ -1042,19 +1109,23 @@ class Avanza:
 
         return self.search_for_instrument(
             InstrumentType.FUND,
-            query
+            query,
+            limit
         )
 
     def search_for_certificate(
         self,
-        query: str
+        query: str,
+        limit: int = 10
     ):
         """ Search for a certificate
 
         Args:
             query: can be a ISIN, name or tickerSymbol
+            limit: maximum number of results to return
 
         Returns:
+
             {
                 'hits': [{
                     'instrumentType': 'CERTIFICATE',
@@ -1076,19 +1147,23 @@ class Avanza:
 
         return self.search_for_instrument(
             InstrumentType.CERTIFICATE,
-            query
+            query,
+            limit
         )
 
     def search_for_warrant(
         self,
-        query: str
+        query: str,
+        limit: int = 10
     ):
         """ Search for a warrant
 
         Args:
             query: can be a ISIN, name or tickerSymbol
+            limit: maximum number of results to return
 
         Returns:
+
             {
                 'hits': [{
                     'instrumentType': 'WARRANT',
@@ -1110,17 +1185,25 @@ class Avanza:
 
         return self.search_for_instrument(
             InstrumentType.WARRANT,
-            query
+            query,
+            limit
         )
 
     def search_for_instrument(
         self,
         instrument_type: InstrumentType,
-        query: str
+        query: str,
+        limit: int = 10
     ):
         """ Search for a specific instrument
 
+        Args:
+            instrument_type: can be STOCK, FUND, BOND etc
+            query: can be a ISIN, name or tickerSymbol
+            limit: maximum number of results to return
+
         Returns:
+
             See the functions [
                 search_for_stock(),
                 search_for_fund(),
@@ -1133,7 +1216,8 @@ class Avanza:
             HttpMethod.GET,
             Route.INSTRUMENT_SEARCH_PATH.value.format(
                 instrument_type.value.upper(),
-                query
+                query,
+                limit
             )
         )
 
@@ -1145,6 +1229,7 @@ class Avanza:
         """ Get order book info
 
         Returns:
+
             {
                 'account': {
                     'buyingPower': float,
@@ -1192,6 +1277,7 @@ class Avanza:
         """ Get info about multiple order books
 
         Returns:
+
             [{
                 'changePercentOneYear': float,
                 'changePercentPeriod': float,
@@ -1221,6 +1307,7 @@ class Avanza:
         """ Get owned positions
 
         Returns:
+
             {
                 'instrumentPositions': [{
                     'instrumentType': str,
@@ -1269,6 +1356,7 @@ class Avanza:
         """ Get report about the development of your owned positions during the specified timeperiod
 
         Returns:
+
             {
                 'developmentResponse': {
                     'chartData': [{
@@ -1404,6 +1492,7 @@ class Avanza:
         """ Get currently active deals and orders
 
         Returns:
+
             {
                 'accounts': [{'id': str, 'name': str', 'type': str}],
                 'deals': [{
@@ -1472,6 +1561,7 @@ class Avanza:
         https://www.avanza.se/fonder/fondinspiration.html
 
         Returns:
+
             [{
                 'averageChange': float,
                 'averageChangeSinceThreeMonths': float,
@@ -1513,6 +1603,7 @@ class Avanza:
         """ Get inspiration list
 
         Returns:
+
             {
                 'averageChangeSinceThreeMonths': float,
                 'highlightField': {'label': str, 'percent': bool},
@@ -1551,9 +1642,10 @@ class Avanza:
         """ Return chart data for an order book for the specified time period with given resolution
 
         Returns:
+
             {
                 'ohlc': [{'timestamp': int, 'open': float, 'close': float, 'low': float, 'high': float, 'totalVolumeTraded': int}]
-                'metadata': 
+                'metadata':
                 { 'resolution' : {'chartResolution': str,
                                   'availableResolutions': [str]}
                 }
@@ -1587,6 +1679,7 @@ class Avanza:
         """ Place an order
 
         Returns:
+
             If the order was successfully placed:
 
             {
@@ -1625,6 +1718,7 @@ class Avanza:
         """ Place a buy order for a fund
 
         Returns:
+
             {
                 message: str,
                 orderId: str,
@@ -1652,6 +1746,7 @@ class Avanza:
         """ Place a sell order for a fund
 
         Returns:
+
             {
                 message: str,
                 orderId: str,
@@ -1670,6 +1765,67 @@ class Avanza:
             }
         )
 
+    def place_stop_loss_order(
+        self,
+        parent_stop_loss_id: str,
+        account_id: str,
+        order_book_id: str,
+        stop_loss_trigger: StopLossTrigger,
+        stop_loss_order_event: StopLossOrderEvent,
+    ):
+        """ Place an stop loss order
+
+        Args:
+
+            parent_stop_loss_id: The id of the parent stop loss order. If this is the first stop loss order, this should be "0".
+
+            account_id: A valid account id.
+
+            order_book_id: The order book id of the instrument to place the stop loss order for.
+
+            stop_loss_trigger: The stop loss trigger type.
+
+            stop_loss_order_event: The stop loss order event type.
+
+        Returns:
+
+            If the order was successfully placed:
+
+            {
+                status: 'SUCCESS',
+                stoplossOrderId: str
+            }
+
+            If the order was not placed:
+
+            {
+                status: str,
+                stoplossOrderId: str
+            }
+        """
+
+        return self.__call(
+            HttpMethod.POST,
+            Route.ORDER_PLACE_STOP_LOSS_PATH.value,
+            {
+                'parentStopLossId': parent_stop_loss_id,
+                'accountId': account_id,
+                'orderBookId': order_book_id,
+                'stopLossTrigger': {
+                    'type': stop_loss_trigger.type,
+                    'value': stop_loss_trigger.value,
+                    'validUntil': stop_loss_trigger.valid_until.isoformat()
+                },
+                'stopLossOrderEvent': {
+                    'type': stop_loss_order_event.type,
+                    'price': stop_loss_order_event.price,
+                    'volume': stop_loss_order_event.volume,
+                    'validDays': stop_loss_order_event.valid_days,
+                    'priceType': stop_loss_order_event.price_type,
+                    'shortSellingAllowed': stop_loss_order_event.short_selling_allowed
+                }
+            }
+        )
 
     def place_stop_loss_order(
         self,
@@ -1743,10 +1899,10 @@ class Avanza:
         valid_until: date,
         volume: int
     ):
-
         """ Update an existing order
 
         Returns:
+
             {
                 messages: List[str],
                 orderId: str,
@@ -1779,80 +1935,81 @@ class Avanza:
         """ Get an existing order
 
         Returns:
-        {
-            'account': {
-                'buyingPower': float,
-                'id': str,
-                'name': str,
-                'totalBalance': float,
-                'type': str
-            },
-            'brokerTradeSummary': {
-                'items': [{
-                    'brokerCode': str,
-                    'buyVolume': int,
-                    'netBuyVolume': int,
-                    'sellVolume': int
+
+            {
+                'account': {
+                    'buyingPower': float,
+                    'id': str,
+                    'name': str,
+                    'totalBalance': float,
+                    'type': str
+                },
+                'brokerTradeSummary': {
+                    'items': [{
+                        'brokerCode': str,
+                        'buyVolume': int,
+                        'netBuyVolume': int,
+                        'sellVolume': int
+                    }],
+                    'orderbookId': str
+                },
+                'customer': {
+                    'courtageClass': str,
+                    'showCourtageClassInfoOnOrderPage': bool
+                },
+                'firstTradableDate': str,
+                'hasInstrumentKnowledge': bool,
+                'hasInvestmentFees': {'buy': bool, 'sell': bool},
+                'hasShortSellKnowledge': bool,
+                'lastTradableDate': str,
+                'latestTrades': [{
+                    'buyer': str,
+                    'cancelled': bool,
+                    'dealTime': str,
+                    'matchedOnMarket': bool,
+                    'price': float,
+                    'seller': str,
+                    'volume': int
                 }],
-                'orderbookId': str
-            },
-            'customer': {
-                'courtageClass': str,
-                'showCourtageClassInfoOnOrderPage': bool
-            },
-            'firstTradableDate': str,
-            'hasInstrumentKnowledge': bool,
-            'hasInvestmentFees': {'buy': bool, 'sell': bool},
-            'hasShortSellKnowledge': bool,
-            'lastTradableDate': str,
-            'latestTrades': [{
-                'buyer': str,
-                'cancelled': bool,
-                'dealTime': str,
-                'matchedOnMarket': bool,
-                'price': float,
-                'seller': str,
-                'volume': int
-            }],
-            'marketMakerExpected': bool,
-            'marketTrades': bool,
-            'order': {
-                'orderCondition': str,
-                'orderType': str,
-                'price': float,
-                'validUntil': str,
-                'volume': int
-            },
-            'orderDepthLevels': List,
-            'orderDepthReceivedTime': str,
-            'orderbook': {
-                'change': float,
-                'changePercent': float,
-                'currency': str,
-                'exchangeRate': float,
-                'flagCode': str,
-                'highestPrice': float,
-                'id': str,
-                'lastPrice': float,
-                'lastPriceUpdated': str,
-                'lowestPrice': float,
-                'name': str,
-                'positionVolume': float,
-                'tickerSymbol': str,
-                'totalValueTraded': float,
-                'totalVolumeTraded': float,
-                'tradable': bool,
-                'tradingUnit': int,
-                'type': str,
-                'volumeFactor': float
-            },
-            'tickSizeRules': [{
-                'maxPrice': int,
-                'minPrice': int,
-                'tickSize': int
-            }],
-            'untradableDates': List[str]
-        }
+                'marketMakerExpected': bool,
+                'marketTrades': bool,
+                'order': {
+                    'orderCondition': str,
+                    'orderType': str,
+                    'price': float,
+                    'validUntil': str,
+                    'volume': int
+                },
+                'orderDepthLevels': List,
+                'orderDepthReceivedTime': str,
+                'orderbook': {
+                    'change': float,
+                    'changePercent': float,
+                    'currency': str,
+                    'exchangeRate': float,
+                    'flagCode': str,
+                    'highestPrice': float,
+                    'id': str,
+                    'lastPrice': float,
+                    'lastPriceUpdated': str,
+                    'lowestPrice': float,
+                    'name': str,
+                    'positionVolume': float,
+                    'tickerSymbol': str,
+                    'totalValueTraded': float,
+                    'totalVolumeTraded': float,
+                    'tradable': bool,
+                    'tradingUnit': int,
+                    'type': str,
+                    'volumeFactor': float
+                },
+                'tickSizeRules': [{
+                    'maxPrice': int,
+                    'minPrice': int,
+                    'tickSize': int
+                }],
+                'untradableDates': List[str]
+            }
         """
 
         return self.__call(
@@ -1874,6 +2031,7 @@ class Avanza:
         """ Get open stop losses
 
         Returns:
+
             [{
                 "id": str,
                 "status": str,
@@ -1925,20 +2083,21 @@ class Avanza:
         """ Delete an existing order
 
         Returns:
-            Returns:
+
             {
-                messages: List[str],
+                messages: str,
                 orderId: str,
-                requestId: str,
-                status: str
+                parameters: List[str],
+                orderRequestStatus: str
             }
         """
         return self.__call(
-            HttpMethod.DELETE,
-            Route.ORDER_DELETE_PATH.value.format(
-                account_id,
-                order_id
-            )
+            HttpMethod.POST,
+            Route.ORDER_DELETE_PATH.value,
+            {
+                'accountId': account_id,
+                'orderId': order_id
+            }
         )
 
     def get_monthly_savings_by_account_id(
@@ -1948,6 +2107,7 @@ class Avanza:
         """ Get monthly savings at avanza for specific account
 
         Returns:
+
             {
                 'monthlySavings': [{
                     'account': {
@@ -1992,6 +2152,7 @@ class Avanza:
         """ Get your monthly savings at Avanza
 
         Returns:
+
             {
                 'monthlySavings': [{
                     'account': {
@@ -2127,6 +2288,7 @@ class Avanza:
                     {'41567': 25, '878733': 75}
 
         Returns:
+
             {
                 'monthlySavingId': str,
                 'status': str
@@ -2172,14 +2334,16 @@ class Avanza:
             }
         )
 
-    def get_transactions(self,
-                         account_id: str=None,
-                         transaction_type: TransactionType=None,
-                         transactions_from: date=None,
-                         transactions_to: date=None,
-                         min_amount: int=None,
-                         max_amount: int=None,
-                         order_book_ids: Sequence[str]=[]):
+    def get_transactions(
+        self,
+        account_id: str = None,
+        transaction_type: TransactionType = None,
+        transactions_from: date = None,
+        transactions_to: date = None,
+        min_amount: int = None,
+        max_amount: int = None,
+        order_book_ids: Sequence[str] = []
+    ):
         """ Get transactions, optionally apply search criteria.
 
         Args:
@@ -2200,6 +2364,7 @@ class Avanza:
             order_book_ids: Only fetch transactions involving this/these orderbooks.
 
         Returns:
+
             {
                 'transactions': [
                     {
@@ -2283,12 +2448,12 @@ class Avanza:
         )
 
     def get_transactions_details(
-            self,
-            transaction_details_types: Sequence[TransactionsDetailsType]=[],
-            transactions_from: date=None,
-            transactions_to: date=None,
-            isin: str=None,
-            max_elements: int=1000,
+        self,
+        transaction_details_types: Sequence[TransactionsDetailsType] = [],
+        transactions_from: date = None,
+        transactions_to: date = None,
+        isin: str = None,
+        max_elements: int = 1000
     ):
         """ Get transactions, optionally apply criterias.
 
@@ -2304,6 +2469,7 @@ class Avanza:
             max_elements: Limit result to N transactions.
 
         Returns:
+
             {
                 'firstTransactionDate': str,
                 'transactionsFilter': {
@@ -2414,18 +2580,19 @@ class Avanza:
         Sets a price alert for the specified orderbook and returns all the existing alerts.
 
         Returns:
-        [
-            {
-                'alertId': str,
-                'accountId': str,
-                'price': float,
-                'validUntil': str,
-                'direction': str,
-                'email': bool,
-                'notification': bool,
-                'sms': bool,
-            }
-        ]
+
+            [
+                {
+                    'alertId': str,
+                    'accountId': str,
+                    'price': float,
+                    'validUntil': str,
+                    'direction': str,
+                    'email': bool,
+                    'notification': bool,
+                    'sms': bool,
+                }
+            ]
         """
 
         return self.__call(
@@ -2445,18 +2612,19 @@ class Avanza:
         Gets all the price alerts for the specified orderbook.
 
         Returns:
-        [
-            {
-                'alertId': str,
-                'accountId': str,
-                'price': float,
-                'validUntil': str,
-                'direction': str,
-                'email': bool,
-                'notification': bool,
-                'sms': bool,
-            }
-        ]
+
+            [
+                {
+                    'alertId': str,
+                    'accountId': str,
+                    'price': float,
+                    'validUntil': str,
+                    'direction': str,
+                    'email': bool,
+                    'notification': bool,
+                    'sms': bool,
+                }
+            ]
         """
         return self.__call(
             HttpMethod.GET,
@@ -2468,18 +2636,19 @@ class Avanza:
         Deletes a price alert from the specified orderbook and returns the remaining alerts.
 
         Returns:
-        [
-            {
-                'alertId': str,
-                'accountId': str,
-                'price': float,
-                'validUntil': str,
-                'direction': str,
-                'email': bool,
-                'notification': bool,
-                'sms': bool,
-            }
-        ]
+
+            [
+                {
+                    'alertId': str,
+                    'accountId': str,
+                    'price': float,
+                    'validUntil': str,
+                    'direction': str,
+                    'email': bool,
+                    'notification': bool,
+                    'sms': bool,
+                }
+            ]
         """
         return self.__call(
             HttpMethod.DELETE,
@@ -2490,6 +2659,7 @@ class Avanza:
         """ Return current offers
 
         Returns:
+
             [
                 {
                     "customerOfferId": str,
