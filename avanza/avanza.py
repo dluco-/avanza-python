@@ -1,5 +1,7 @@
 
 import hashlib
+import json
+import time
 from datetime import date
 from typing import Any, Callable, Dict, Optional, Sequence
 
@@ -19,41 +21,45 @@ MAX_INACTIVE_MINUTES = 60 * 24
 
 
 class Avanza:
-    def __init__(self, credentials: dict):
+    _instance = None
+
+    def __new__(cls, credentials=None):
+        if cls._instance is None:
+            cls._instance = super(Avanza, cls).__new__(cls)
+            # Initialize the instance only once
+            cls._instance.init(credentials)
+        return cls._instance
+
+    def init(self, credentials):
         """
-        Args:
-            credentials: Login credentials.
-                Using TOTP secret:
-                    {
-                        'username': 'MY_USERNAME',
-                        'password': 'MY_PASSWORD',
-                        'totpSecret': 'MY_TOTP_SECRET'
-                    }
-                Using TOTP code:
-                    {
-                        'username': 'MY_USERNAME',
-                        'password': 'MY_PASSWORD',
-                        'totpCode': 'MY_TOTP_CODE'
-                    }
+        Initialize the Avanza instance with the given credentials.
+        This method will only be executed once.
         """
+
+        if credentials is None:
+            raise ValueError("Credentials must be provided for initialization")
+
         self._authenticationTimeout = MAX_INACTIVE_MINUTES
         self._session = requests.Session()
 
-        response_body, credentials = self.__authenticate(credentials)
-
-        self._credentials = credentials
-        self._authentication_session = response_body['authenticationSession']
-        self._push_subscription_id = response_body['pushSubscriptionId']
-        self._customer_id = response_body['customerId']
+        self._update_session_data(*self.__authenticate(credentials))
 
         self._socket = AvanzaSocket(
             self._push_subscription_id,
             self._session.cookies.get_dict()
         )
 
+    def _update_session_data(self, response_body, credentials):
+        """Update session data after authentication."""
+        self._credentials = credentials
+        self._authentication_session = response_body['authenticationSession']
+        self._push_subscription_id = response_body['pushSubscriptionId']
+        self._customer_id = response_body['customerId']
+
     def __authenticate(self, credentials):
         if not MIN_INACTIVE_MINUTES <= self._authenticationTimeout <= MAX_INACTIVE_MINUTES:
-            raise ValueError(f'Session timeout not in range {MIN_INACTIVE_MINUTES} - {MAX_INACTIVE_MINUTES} minutes')
+            raise ValueError(
+                f'Session timeout not in range {MIN_INACTIVE_MINUTES} - {MAX_INACTIVE_MINUTES} minutes')
 
         data = {
             'username': credentials['username'],
@@ -98,8 +104,13 @@ class Avanza:
             json={
                 'method': 'TOTP',
                 'totpCode': totp_code
-            }
-        )
+            })
+
+        print("##########################################################")
+        print("\nVALIDATE 2FA")
+        print("BODY", json.dumps(response.json(), indent=4))
+        print("TOKEN", response.headers.get('X-SecurityToken'))
+        print("##########################################################")
 
         response.raise_for_status()
 
@@ -126,14 +137,31 @@ class Avanza:
         else:
             data['json'] = options
 
-        response = method_call(
-            f'{BASE_URL}{path}',
-            headers={
-                'X-AuthenticationSession': self._authentication_session,
-                'X-SecurityToken': self._security_token
-            },
-            **data
-        )
+        print("##########################################################")
+
+        print("\n### REQUEST ###")
+        print("METHOD", method)
+        print("PATH", path)
+        print("TOKEN", self._security_token)
+        print(json.dumps(data, indent=4))
+
+        def request():
+            return method_call(
+                f'{BASE_URL}{path}',
+                headers={
+                    'X-AuthenticationSession': self._authentication_session,
+                    'X-SecurityToken': self._security_token
+                },
+                **data
+            )
+
+        response = self._retry_request(request)
+
+        print("\n### RESPONSE ###")
+        print("STATUS", response.status_code)
+        print("BODY", json.dumps(response.json(), indent=4))
+
+        print("##########################################################")
 
         response.raise_for_status()
 
@@ -146,6 +174,37 @@ class Avanza:
             return response.content
 
         return response.json()
+
+    def _retry_request(self, request_function, max_retries=2, retry_delay=5):
+        """
+        Retries a request function based on specified conditions.
+
+        Args:
+            request_function: A function that performs the request and returns the response.
+            max_retries (int): Maximum number of retries.
+            retry_delay (int): Delay between retries in seconds.
+
+        Returns:
+            The response from the successful request.
+        """
+        for attempt in range(max_retries):
+            try:
+                response = request_function()
+                response.raise_for_status()
+                return response  # Successful response, return it
+            except requests.HTTPError as e:
+                if e.response.status_code == 401 and attempt < max_retries - 1:
+                    print(
+                        f"Request failed with 401 Unauthorized. Attempting re-authentication...")
+
+                    self._update_session_data(
+                        *self.__authenticate(self._credentials))
+
+                    print(
+                        f"Re-authentication successful. Retrying original request in {retry_delay} seconds...")
+                    time.sleep(retry_delay)
+                else:
+                    raise  # Re-raise the exception if not retryable or max retries reached
 
     async def subscribe_to_id(
         self,
@@ -276,7 +335,7 @@ class Avanza:
                 urlParameterId
             )
         )
-    
+
     def get_account_performance(self):
         # """ Get overview for a specific account
 
@@ -827,7 +886,7 @@ class Avanza:
             stock_id,
             ChannelType.QUOTE
         )
-    
+
     def get_stock_trades(
         self,
         stock_id: str
@@ -837,7 +896,7 @@ class Avanza:
             stock_id,
             ChannelType.TRADES
         )
-    
+
     def get_stock_orderdepth(
         self,
         stock_id: str
@@ -1114,7 +1173,7 @@ class Avanza:
                 instrument_id
             )
         )
-    
+
     def global_search(
         self,
         query: str,
@@ -1137,7 +1196,7 @@ class Avanza:
         #     ]
         #     for more info about the return models
         # """
-    
+
         return self.__call(
             HttpMethod.POST,
             Route.GLOBAL_SEARCH.value.format(limit),
@@ -1953,7 +2012,7 @@ class Avanza:
 
         Args:
             parent_stop_loss_id: The id of the parent stop loss order. If this is the first stop loss order, this should be "0".
-            
+
             account_id: A valid account id.
 
             order_book_id: The order book id of the instrument to place the stop loss order for.
@@ -2000,7 +2059,6 @@ class Avanza:
                 }
             }
         )
-
 
     def edit_order(
         self,
@@ -2557,7 +2615,8 @@ class Avanza:
 
         return self.__call(
             HttpMethod.GET,
-            Route.TRANSACTIONS_PATH.value.format('/'.join(filter(None, [account_id, transaction_type.value if transaction_type else None]))),
+            Route.TRANSACTIONS_PATH.value.format(
+                '/'.join(filter(None, [account_id, transaction_type.value if transaction_type else None]))),
             options
         )
 
@@ -2766,7 +2825,8 @@ class Avanza:
         """
         return self.__call(
             HttpMethod.DELETE,
-            Route.PRICE_ALERT_PATH.value.format(order_book_id, alert_id)+f"/{alert_id}",
+            Route.PRICE_ALERT_PATH.value.format(
+                order_book_id, alert_id)+f"/{alert_id}",
         )
 
     def get_offers(self):
