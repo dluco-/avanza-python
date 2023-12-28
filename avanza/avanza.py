@@ -56,7 +56,6 @@ class Avanza:
             raise ValueError(f'Session timeout not in range {MIN_INACTIVE_MINUTES} - {MAX_INACTIVE_MINUTES} minutes')
 
         data = {
-            'maxInactiveMinutes': self._authenticationTimeout,
             'username': credentials['username'],
             'password': credentials['password']
         }
@@ -212,7 +211,7 @@ class Avanza:
         """
         return self.__call(HttpMethod.GET, Route.OVERVIEW_PATH.value)
 
-    def get_account_overview(self, account_id: str):
+    def get_account_overview(self, urlParameterId: str):
         """ Get overview for a specific account
 
         Returns:
@@ -274,9 +273,70 @@ class Avanza:
         return self.__call(
             HttpMethod.GET,
             Route.ACCOUNT_OVERVIEW_PATH.value.format(
-                account_id
+                urlParameterId
             )
         )
+    
+    def get_account_performance(self):
+        # """ Get overview for a specific account
+
+        # Returns:
+
+        #     {
+        #         'accountId': str,
+        #         'accountType': str,
+        #         'accountTypeName': str,
+        #         'accruedInterest': float,
+        #         'allowMonthlySaving': bool,
+        #         'availableSuperLoanAmount': float,
+        #         'buyingPower': float,
+        #         'clearingNumber': str,
+        #         'courtageClass': str,
+        #         'creditAfterInterest': float,
+        #         'creditLimit': float,
+        #         'currencyAccounts': [{
+        #             'balance': float,
+        #             'currency': str
+        #         }],
+        #         'depositable': bool,
+        #         'forwardBalance': float,
+        #         'instrumentTransferPossible': bool,
+        #         'interestRate': float,
+        #         'internalTransferPossible': bool,
+        #         'jointlyOwned': bool,
+        #         'numberOfDeals': int,
+        #         'numberOfIntradayTransfers': int,
+        #         'numberOfOrders': int,
+        #         'numberOfTransfers': int,
+        #         'overMortgaged': bool,
+        #         'overdrawn': bool,
+        #         'ownCapital': float,
+        #         'performance': float,
+        #         'performancePercent': float,
+        #         'performanceSinceOneMonth': float,
+        #         'performanceSinceOneMonthPercent': float,
+        #         'performanceSinceOneWeek': float,
+        #         'performanceSinceOneWeekPercent': float,
+        #         'performanceSinceOneYear': float,
+        #         'performanceSinceOneYearPercent': float,
+        #         'performanceSinceSixMonths': float,
+        #         'performanceSinceSixMonthsPercent': float,
+        #         'performanceSinceThreeMonths': float,
+        #         'performanceSinceThreeMonthsPercent': float,
+        #         'performanceSinceThreeYears': float,
+        #         'performanceSinceThreeYearsPercent': float,
+        #         'reservedAmount': float,
+        #         'sharpeRatio': float,
+        #         'standardDeviation': float,
+        #         'totalBalance': float,
+        #         'totalCollateralValue': float,
+        #         'totalPositionsValue': float,
+        #         'totalProfit': float,
+        #         'totalProfitPercent': float,
+        #         'withdrawable': bool
+        #     }
+        # """
+        return self.__call(HttpMethod.GET, Route.ACCOUNT_PERFORMANCE.value)
 
     def get_accounts_positions(self):
         """Get investment positions for all account
@@ -639,132 +699,153 @@ class Avanza:
             )
         )
 
-    def get_stock_info(
+    def get_stock_quote(
         self,
         stock_id: str
     ):
-        """ Returns info about a stock
+        # """ Returns info about a stock
 
-        Returns:
+        # Returns:
 
-            {
-                'annualMeetings': [
-                    {
-                        'eventDate': str,
-                        'extra': bool
-                    }
-                ],
-                'brokerTradeSummary': {
-                    'items': [
-                        {
-                            'brokerCode': str,
-                            'buyVolume': int,
-                            'netBuyVolume': int,
-                            'sellVolume': int
-                        }
-                    ],
-                    'orderbookId': str
-                },
-                'buyPrice': float,
-                'change': float,
-                'changePercent': float,
-                'company': {
-                    'CEO': str,
-                    'chairman': str,
-                    'description': str,
-                    'id': str,
-                    'marketCapital': int,
-                    'marketCapitalCurrency': str,
-                    'name': str,
-                    'sector': str,
-                    'stocks': [
-                        {
-                            'name': str,
-                            'totalNumberOfShares': int
-                        }
-                    ],
-                    'totalNumberOfShares': int
-                },
-                'companyReports': [{
-                    'eventDate': str,
-                    'reportType': str
-                }],
-                'country': str,
-                'currency': str,
-                'dividends': [{
-                    'amountPerShare': float,
-                    'currency': str,
-                    'exDate': str,
-                    'paymentDate': str
-                }],
-                'flagCode': str,
-                'hasInvestmentFees': bool,
-                'highestPrice': float,
-                'id': str,
-                'isin': str,
-                'keyRatios': {
-                    'directYield': float,
-                    'priceEarningsRatio': float,
-                    'volatility': float
-                },
-                'lastPrice': float,
-                'lastPriceUpdated': str,
-                'latestTrades': [],
-                'loanFactor': float,
-                'lowestPrice': float,
-                'marketMakerExpected': bool,
-                'marketPlace': str,
-                'marketTrades': bool,
-                'name': str,
-                'numberOfOwners': int,
-                'numberOfPriceAlerts': int,
-                'orderDepthLevels': [
-                    {
-                        'buy': {
-                            'percent': float,
-                            'price': float,
-                            'volume': int
-                        },
-                        'sell': {
-                            'percent': float,
-                            'price': float,
-                            'volume': int
-                        }
-                    }
-                ],
-                'orderDepthReceivedTime': str,
-                'positions': [],
-                'positionsTotalValue': float,
-                'priceAtStartOfYear': float,
-                'priceFiveYearsAgo': float,
-                'priceOneMonthAgo': float,
-                'priceOneWeekAgo': float,
-                'priceOneYearAgo': float,
-                'priceSixMonthsAgo': float,
-                'priceThreeMonthsAgo': float,
-                'priceThreeYearsAgo': float,
-                'pushPermitted': bool,
-                'quoteUpdated': str,
-                'relatedStocks': [{
-                    'flagCode': str,
-                    'id': str,
-                    'lastPrice': float,
-                    'name': str,
-                    'priceOneYearAgo': float
-                }],
-                'sellPrice': float,
-                'shortSellable': bool,
-                'superLoan': bool,
-                'tickerSymbol': str,
-                'totalValueTraded': float,
-                'totalVolumeTraded': int,
-                'tradable': bool
-            }
-        """
+        #     {
+        #         'annualMeetings': [
+        #             {
+        #                 'eventDate': str,
+        #                 'extra': bool
+        #             }
+        #         ],
+        #         'brokerTradeSummary': {
+        #             'items': [
+        #                 {
+        #                     'brokerCode': str,
+        #                     'buyVolume': int,
+        #                     'netBuyVolume': int,
+        #                     'sellVolume': int
+        #                 }
+        #             ],
+        #             'orderbookId': str
+        #         },
+        #         'buyPrice': float,
+        #         'change': float,
+        #         'changePercent': float,
+        #         'company': {
+        #             'CEO': str,
+        #             'chairman': str,
+        #             'description': str,
+        #             'id': str,
+        #             'marketCapital': int,
+        #             'marketCapitalCurrency': str,
+        #             'name': str,
+        #             'sector': str,
+        #             'stocks': [
+        #                 {
+        #                     'name': str,
+        #                     'totalNumberOfShares': int
+        #                 }
+        #             ],
+        #             'totalNumberOfShares': int
+        #         },
+        #         'companyReports': [{
+        #             'eventDate': str,
+        #             'reportType': str
+        #         }],
+        #         'country': str,
+        #         'currency': str,
+        #         'dividends': [{
+        #             'amountPerShare': float,
+        #             'currency': str,
+        #             'exDate': str,
+        #             'paymentDate': str
+        #         }],
+        #         'flagCode': str,
+        #         'hasInvestmentFees': bool,
+        #         'highestPrice': float,
+        #         'id': str,
+        #         'isin': str,
+        #         'keyRatios': {
+        #             'directYield': float,
+        #             'priceEarningsRatio': float,
+        #             'volatility': float
+        #         },
+        #         'lastPrice': float,
+        #         'lastPriceUpdated': str,
+        #         'latestTrades': [],
+        #         'loanFactor': float,
+        #         'lowestPrice': float,
+        #         'marketMakerExpected': bool,
+        #         'marketPlace': str,
+        #         'marketTrades': bool,
+        #         'name': str,
+        #         'numberOfOwners': int,
+        #         'numberOfPriceAlerts': int,
+        #         'orderDepthLevels': [
+        #             {
+        #                 'buy': {
+        #                     'percent': float,
+        #                     'price': float,
+        #                     'volume': int
+        #                 },
+        #                 'sell': {
+        #                     'percent': float,
+        #                     'price': float,
+        #                     'volume': int
+        #                 }
+        #             }
+        #         ],
+        #         'orderDepthReceivedTime': str,
+        #         'positions': [],
+        #         'positionsTotalValue': float,
+        #         'priceAtStartOfYear': float,
+        #         'priceFiveYearsAgo': float,
+        #         'priceOneMonthAgo': float,
+        #         'priceOneWeekAgo': float,
+        #         'priceOneYearAgo': float,
+        #         'priceSixMonthsAgo': float,
+        #         'priceThreeMonthsAgo': float,
+        #         'priceThreeYearsAgo': float,
+        #         'pushPermitted': bool,
+        #         'quoteUpdated': str,
+        #         'relatedStocks': [{
+        #             'flagCode': str,
+        #             'id': str,
+        #             'lastPrice': float,
+        #             'name': str,
+        #             'priceOneYearAgo': float
+        #         }],
+        #         'sellPrice': float,
+        #         'shortSellable': bool,
+        #         'superLoan': bool,
+        #         'tickerSymbol': str,
+        #         'totalValueTraded': float,
+        #         'totalVolumeTraded': int,
+        #         'tradable': bool
+        #     }
+        # """
 
         return self.get_instrument(
             InstrumentType.STOCK,
-            stock_id
+            stock_id,
+            ChannelType.QUOTE
+        )
+    
+    def get_stock_trades(
+        self,
+        stock_id: str
+    ):
+        return self.get_instrument(
+            InstrumentType.STOCK,
+            stock_id,
+            ChannelType.TRADES
+        )
+    
+    def get_stock_orderdepth(
+        self,
+        stock_id: str
+    ):
+        return self.get_instrument(
+            InstrumentType.STOCK,
+            stock_id,
+            ChannelType.ORDERDEPTHS
         )
 
     def get_certificate_info(
@@ -985,7 +1066,8 @@ class Avanza:
     def get_instrument(
         self,
         instrument_type: InstrumentType,
-        instrument_id: str
+        instrument_id: str,
+        channel: ChannelType,
     ):
         """
             Get instrument info
@@ -1003,7 +1085,8 @@ class Avanza:
             HttpMethod.GET,
             Route.INSTRUMENT_PATH.value.format(
                 instrument_type.value,
-                instrument_id
+                instrument_id,
+                channel.value
             )
         )
 
@@ -1030,6 +1113,37 @@ class Avanza:
                 instrument_type.value,
                 instrument_id
             )
+        )
+    
+    def global_search(
+        self,
+        query: str,
+        limit: int = 10
+    ):
+        # """ Search for a specific instrument
+
+        # Args:
+        #     instrument_type: can be STOCK, FUND, BOND etc
+        #     query: can be a ISIN, name or tickerSymbol
+        #     limit: maximum number of results to return
+
+        # Returns:
+
+        #     See the functions [
+        #         search_for_stock(),
+        #         search_for_fund(),
+        #         search_for_certificate(),
+        #         search_for_warrant()
+        #     ]
+        #     for more info about the return models
+        # """
+    
+        return self.__call(
+            HttpMethod.POST,
+            Route.GLOBAL_SEARCH.value.format(limit),
+            {
+                'query': query,
+            }
         )
 
     def search_for_stock(
@@ -1872,16 +1986,16 @@ class Avanza:
                 'accountId': account_id,
                 'orderBookId': order_book_id,
                 'stopLossTrigger': {
-                    'type': stop_loss_trigger.type,
+                    'type': stop_loss_trigger.type.value,
                     'value': stop_loss_trigger.value,
                     'validUntil': stop_loss_trigger.valid_until.isoformat()
                 },
                 'stopLossOrderEvent': {
-                    'type': stop_loss_order_event.type,
+                    'type': stop_loss_order_event.type.value,
                     'price': stop_loss_order_event.price,
                     'volume': stop_loss_order_event.volume,
                     'validDays': stop_loss_order_event.valid_days,
-                    'priceType': stop_loss_order_event.price_type,
+                    'priceType': stop_loss_order_event.price_type.value,
                     'shortSellingAllowed': stop_loss_order_event.short_selling_allowed
                 }
             }

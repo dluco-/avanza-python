@@ -22,7 +22,7 @@ class TransactionsDetailsType(enum.Enum):
 
 class ChannelType(enum.Enum):
     ACCOUNTS = 'accounts'
-    QUOTES = 'quotes'
+    QUOTE = 'quote'
     ORDERDEPTHS = 'orderdepths'
     TRADES = 'trades'
     BROKERTRADESUMMARY = 'brokertradesummary'
@@ -105,7 +105,8 @@ class HttpMethod(enum.Enum):
     DELETE = 4
 
 class Route(enum.Enum):
-    ACCOUNT_OVERVIEW_PATH = '/_mobile/account/{}/overview'
+    ACCOUNT_OVERVIEW_PATH = '/_api/account-overview/overview/account/{}'
+    ACCOUNT_PERFORMANCE = '/_api/account-performance/overview/total-values'
     ACCOUNTS_POSITIONS_PATH = '/_api/position-data/positions'
     AUTHENTICATION_PATH = '/_api/authentication/sessions/usercredentials'
     CHARTDATA_PATH = '/_api/price-chart/stock/{}'
@@ -114,7 +115,7 @@ class Route(enum.Enum):
     FUND_PATH = '/_api/fund-guide/guide/{}'
     INSIGHTS_PATH = '/_api/insights-development/?timePeriod={}&accountIds={}'
     INSPIRATION_LIST_PATH = '/_mobile/marketing/inspirationlist/{}'
-    INSTRUMENT_PATH = '/_api/market-guide/{}/{}'
+    INSTRUMENT_PATH = '/_api/market-guide/{}/{}/{}'
     INSTRUMENT_DETAILS_PATH = '/_api/market-guide/{}/{}/details'
     INSTRUMENT_SEARCH_PATH = '/_mobile/market/search/{}?query={}&limit={}'
     MONTHLY_SAVINGS_CREATE_PATH = '/_api/transfer/monthly-savings/{}'
@@ -132,7 +133,7 @@ class Route(enum.Enum):
     ORDER_EDIT_PATH = '/_api/order/{}/{}'
     ORDERBOOK_LIST_PATH = '/_mobile/market/orderbooklist/{}'
     ORDERBOOK_PATH = '/_mobile/order/{}?orderbookId={}'
-    OVERVIEW_PATH = '/_mobile/account/overview'
+    OVERVIEW_PATH = '/_api/account-overview/accounts/list'
     POSITIONS_PATH = '/_mobile/account/positions'
     PRICE_ALERT_PATH = '/_cqbe/marketing/service/alert/{}'
     STOP_LOSS_PATH = '/_api/trading-critical/rest/stoploss'
@@ -141,3 +142,4 @@ class Route(enum.Enum):
     TRANSACTIONS_DETAILS_PATH = '/_api/transactions'
     WATCHLISTS_ADD_DELETE_PATH = '/_api/usercontent/watchlist/{}/orderbooks/{}'
     WATCHLISTS_PATH = '/_mobile/usercontent/watchlist'
+    GLOBAL_SEARCH = '/_api/search/global-search?limit={}'
